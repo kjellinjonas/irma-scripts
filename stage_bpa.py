@@ -57,7 +57,7 @@ class Stager:
             return 0
 
         except Exception as e:
-            logging.error(f"Error: {e}")
+            logging.error(f"{e}")
             return 1
 
     def _check_analysis(self):
@@ -140,7 +140,6 @@ class Stager:
                 return
 
             # Replace pipeline generated multiQC with custom
-            # Double check behaviour if folder is empty
             for f in self.config["sarek_multiqc"].glob("*"):
                 f.unlink()
 
@@ -174,7 +173,7 @@ class Stager:
                 shutil.rmtree(str(qualimap_dir))
 
         except Exception as e:
-            logging.error(f"{self.pipeline} prerparation failed: {e}")
+            logging.error(f"{self.pipeline} preparation failed: {e}")
             raise RuntimeError()
 
     def _stage_files(self):
@@ -332,11 +331,11 @@ def main():
         "md_dest": Path(analysis_dir) / "markduplicates",
         "sarek_multiqc": Path(results_dir) / "reports" / "multiqc",
         "custom_report": Path(analysis_dir)
-        / "multiqc_ngi"
-        / f"{project}_multiqc_report.html",
+            / "multiqc_ngi"
+            / f"{project}_multiqc_report.html",
         "custom_data": Path(analysis_dir)
-        / "multiqc_ngi"
-        / f"{project}_multiqc_report_data.zip",
+            / "multiqc_ngi"
+            / f"{project}_multiqc_report_data.zip",
         "rnaseq_qualimap": Path(results_dir) / "star_salmon" / "qualimap",
         "methylseq_qualimap": Path(results_dir) / "qualimap",
         "checksums_log": Path(analysis_dir) / "logs" / "checksums.log",
