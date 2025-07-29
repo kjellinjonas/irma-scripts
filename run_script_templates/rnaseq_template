@@ -16,7 +16,7 @@ export NXF_WORK=_ANALYSISDIR_/_PROJECT_/work
 rnaseq -resume _CONFIG_ --genome _GENOME_ \
     --input _ANALYSISDIR_/_PROJECT_/_PROJECT_.SampleSheet.csv \
     --outdir _ANALYSISDIR_/_PROJECT_/results \
-    --clip_r1 1 --clip_r2 1 --three_prime_clip_r1 1 --three_prime_clip_r2 1 _EXTRAARGS_
+    --extra_trimgalore_args "--clip_r1 1 --clip_r2 1 --three_prime_clip_r1 1 --three_prime_clip_r2 1" _EXTRAARGS_
 
 # some files get very restrictive permissions, so change them
 chmod 660 _ANALYSISDIR_/_PROJECT_/results/pipeline_info/*
