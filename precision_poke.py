@@ -16,14 +16,14 @@ def get_slurm_queue():
         return set()
 
 def poke_wdirs(head_node, work_dirs):
-    """SSH to the head node and 'stat' the .exitcode files to refresh cache."""
+    """SSH to the head node and poke the .exitcode files."""
     paths = " ".join([f"{d}/.exitcode" for d in work_dirs])
     cmd = f"ssh -n {head_node} 'stat {paths} > /dev/null 2>&1'"
     subprocess.call(cmd, shell=True)
     return
 
 def check_log(log_path, last_log_pos):
-    """Grab only the part of the log that changed since last time"""
+    """Grab only the latest part of log and update position"""
     with open(log_path) as f:
         f.seek(last_log_pos)
         new_entries = f.readlines()
