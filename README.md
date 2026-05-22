@@ -44,3 +44,4 @@ Scans incoming for csv-files at most two folders down and greps for the given st
 * __organize_flowcell.py__ - Script to organize fastq files for a specific runfolder and project prior to analysis.
 * __plot_lambda.py__ - Script to plot lambda based on MultiQC data from the nf-core/methylseq pipeline.
 * __plot_pUC19.py__ - Script to plot pUC19 based on MultiQC data from the nf-core/methylseq pipeline.
+* __precision_poke.py__ - Identifies and pokes stalled processes in a nextflow run.
