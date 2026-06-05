@@ -6,6 +6,14 @@ import csv
 import sys
 from glob import glob
 
+
+SAMPLESHEET_CONST = {
+    "data_header": {"bcl2fastq": "[Data]", "bclconvert": "[BCLConvert_Data]"},
+    "sample_name_col": {"bcl2fastq": "Sample_Name", "bclconvert": "custom_Sample_Name"},
+    "description_col": {"bcl2fastq": "Description", "bclconvert": "custom_Description"},
+}
+
+
 def find_runfolders_with_project(project_id):
     """
     Identifies project folders in the Unaligned directory in runfolders.
@@ -29,6 +37,25 @@ def find_runfolders_with_project(project_id):
                     break
     return runfolders_with_project
 
+def determine_demultiplexer(samplesheet):
+    try:
+        with open(samplesheet) as fin:
+            samplesheet = csv.reader(fin)
+
+            for row in samplesheet:
+                if SAMPLESHEET_CONST["data_header"]["bcl2fastq"] in row:
+                    return "bcl2fastq"
+                elif SAMPLESHEET_CONST["data_header"]["bclconvert"] in row:
+                    return "bclconvert"
+                else:
+                    continue
+
+            raise Exception("Data header not found in SampleSheet.csv")
+
+    except csv.Error as e:
+        print(f"Error parsing SampleSheet.csv: {e}")
+
+
 def parse_samplesheet(runfolders, project):
     """
     Parse sample names and lanes from SampleSheet.csv of each runfolder.
@@ -42,17 +69,20 @@ def parse_samplesheet(runfolders, project):
         samplesheet_path = os.path.join(runfolder, "SampleSheet.csv")
         if os.path.exists(samplesheet_path):
             try:
+                demultiplexer = determine_demultiplexer(samplesheet_path)
                 with open(samplesheet_path, 'r', encoding='utf-8') as fin:
                     reader = csv.reader(fin)
                     sample_name_i = None
                     header_found = False
 
                     for row in reader:
-                        if "[Data]" in row:
+                        if SAMPLESHEET_CONST["data_header"][demultiplexer] in row:
                             header_found = True
                             header = next(reader)
                             try:
-                                sample_name_i = header.index("Sample_Name")
+                                sample_name_i = header.index(
+                                        SAMPLESHEET_CONST["sample_name_col"][demultiplexer]
+                                )
                                 lane_i = header.index("Lane")
                             except ValueError:
                                 print(f"Warning: Sample_Name column not found in {samplesheet_path}")
